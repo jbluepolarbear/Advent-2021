@@ -12,9 +12,20 @@ function puzzleFunction(input) {
 
 function runProgram(commandList) {
   var input = commandList[0].command;
-  var total = 0;
-  for (let c of input) {
-    total += c === '(' ? 1 : -1;
+  var lastValue = -1;
+  var results = [];
+  let total = 0;
+  for (let depth of commandList.map(_ => parseInt(_.command))) {
+    if (lastValue === -1) {
+      results.push(`${depth} (N/A - no previous measurement)`);
+    } else {
+      if (lastValue < depth) {
+        total++;
+      }
+      results.push(`${depth} ${lastValue < depth ? 'increased' : 'decreased'}`);
+    }
+    
+    lastValue = depth;
   }
   return total;
 }

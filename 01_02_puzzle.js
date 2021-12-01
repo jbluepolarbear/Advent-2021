@@ -11,16 +11,30 @@ function puzzleFunction(input) {
 }
 
 function runProgram(commandList) {
-  const input = commandList[0].command;
-  const target = commandList[0].args[0];
+  var input = commandList[0].command;
+  var lastValue = -1;
+  var results = [];
   let total = 0;
-  let result = 0;
-  for (let i = 0; i < input.length; ++i) {
-    total += input[i] === "(" ? 1 : -1;
-    if (total == target) {
-      result = i + 1;
-      break;
+  const depths = commandList.map(c => parseInt(c.command));
+  const size = depths.length;
+  for (let i = 0; i < size; ++i) {
+    let newDepth = depths[i];
+    if (i + 1 < size) {
+      newDepth += depths[i + 1];
     }
+    if (i + 2 < size) {
+      newDepth += depths[i + 2];
+    }
+    if (lastValue === -1) {
+      results.push(`${newDepth} (N/A - no previous measurement)`);
+    } else {
+      if (lastValue < newDepth) {
+        total++;
+      }
+      results.push(`${newDepth} ${lastValue < newDepth ? 'increased' : 'decreased'}`);
+    }
+    
+    lastValue = newDepth;
   }
-  return result;
+  return total;
 }
